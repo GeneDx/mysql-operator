@@ -1,0 +1,20 @@
+name: Auto CI
+
+on:
+  push:
+    branches: [ "*" ]
+    tags: [ "v*", "dev-*", "prd-*", "stg-*" ]
+
+jobs:
+  auto-ci:
+    uses: genedx/ci-workflows/.github/workflows/auto-ci-build.yml@main
+    with:
+      ci_oci_values: ${{ vars.OCI_CI_PRODUCTION_VALUES }}
+      ci_app_id: ${{ vars.DEVOPS_CI_BOT_APP_ID }}
+      renovate_log_level: debug
+    secrets:
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
+      ci_oci_key_content: ${{ secrets.OCI_CI_PRODUCTION_KEY_CONTENT }}
+      ci_oci_auth_token: ${{ secrets.OCI_CI_PRODUCTION_AUTH_TOKEN }}
+      ssh_private_key: ${{ secrets.LOGI_PRIVATE_KEY }}
+      ci_app_private_key: ${{ secrets.DEVOPS_CI_BOT_PRIVATE_KEY }}
