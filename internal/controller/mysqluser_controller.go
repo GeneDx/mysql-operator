@@ -190,7 +190,11 @@ func (r *MySQLUserReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	if err != nil {
 		if errors.IsNotFound(err) { // Secret doesn't exists -> generate password
 			log.Info("[password] Generate new password for Secret", "secretName", secretName)
-			password = utils.GenerateRandomString(16)
+			password, genErr := utils.GenerateComplexRandomString(16)
+			if genErr != nil {
+			    log.Error(genErr, "[password] Failed to generate password")
+			    return ctrl.Result{}, genErr // Handle error
+		    }
 		} else {
 			log.Error(err, "[password] Failed to get Secret", "secretName", secretName)
 			return ctrl.Result{}, err // requeue
